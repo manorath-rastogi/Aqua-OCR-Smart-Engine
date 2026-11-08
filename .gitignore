@@ -21,3 +21,4 @@ wheels/
 .pytest_cache/
 omniocr_output/
 *.log
+

@@ -220,3 +220,4 @@ AQIVON OmniOCR respects open-source licensing. Please review [NOTICES.md](NOTICE
 
 ---
 *AQIVON OmniOCR is developed and maintained by AQIVON Technologies.*
+
