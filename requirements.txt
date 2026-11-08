@@ -1,0 +1,24 @@
+# AQIVON OmniOCR Requirements
+# Core dependencies
+numpy>=1.26.0,<2.0.0
+pillow>=10.0.0
+opencv-python>=4.8.0
+pypdfium2>=5.0.0
+pypdf>=5.0.0
+pdf2image>=1.17.0
+
+# Deep Learning Frameworks
+torch>=2.1.0
+torchvision>=0.16.0
+transformers>=4.40.0,<5.0.0
+huggingface-hub>=0.34.0,<1.0.0
+
+# OCR Engines
+paddlepaddle>=3.2.0
+paddleocr>=3.0.0
+pytesseract>=0.3.10
+
+# Lightweight Testing UI & Utilities
+gradio>=4.0.0
+rich>=13.0.0
+requests>=2.31.0
