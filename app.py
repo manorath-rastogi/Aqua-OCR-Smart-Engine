@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR — Advanced Diagnostic & Testing Interface.
+Aqua OCR Smart Engine — Advanced Diagnostic & Testing Interface.
 A streamlined, high-performance Gradio interface for:
 - Document testing (PNG, JPG, TIFF, Multi-page PDF)
 - Multi-language verification (English, Hindi, Marathi, Urdu, Bengali, Chinese, Arabic, etc.)
@@ -25,18 +25,18 @@ import numpy as np
 import pandas as pd
 from PIL import Image
 
-from aqivon_omniocr import (
+from aqua_ocr_smart_engine import (
     IntelligentRouter,
-    OmniOCRConfig,
+    AquaOCRConfig,
     DEFAULT_CONFIG,
     GLOBAL_VRAM_MANAGER,
     GLOBAL_PREPROCESSOR,
 )
-from aqivon_omniocr.types import OCRResult, PageResult
-from aqivon_omniocr.utils.visualizer import LayoutVisualizer
+from aqua_ocr_smart_engine.types import OCRResult, PageResult
+from aqua_ocr_smart_engine.utils.visualizer import LayoutVisualizer
 
 logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("aqivon_omniocr.app")
+logger = logging.getLogger("aqua_ocr_smart_engine.app")
 
 # Shared router instance
 ROUTER = IntelligentRouter()
@@ -210,7 +210,7 @@ def on_page_change(
 
     # Reconstruct temporary PageResult object
     page_dict = pages_data[page_idx]
-    from aqivon_omniocr.types import TextBlock, BoundingBox, BlockType, PageResult, TableResult
+    from aqua_ocr_smart_engine.types import TextBlock, BoundingBox, BlockType, PageResult, TableResult
     
     blocks = []
     for b in page_dict.get("blocks", []):
@@ -323,11 +323,11 @@ def build_app() -> gr.Blocks:
         neutral_hue="slate"
     )
 
-    with gr.Blocks(title="AQIVON OmniOCR Testing Console") as demo:
+    with gr.Blocks(title="Aqua OCR Smart Engine Testing Console") as demo:
         # Header Banner
         gr.Markdown(
             """
-            # AQIVON OmniOCR — Unified AI Testing Console
+            # Aqua OCR Smart Engine — Unified AI Testing Console
             **AQIVON Technologies** • High-Accuracy Multilingual & Document Layout Engine
             *Supports Baidu Unlimited-OCR (R-SWA), PaddleOCR, Microsoft TrOCR Handwriting, IndicOCR (Hindi, Marathi, Urdu, Bengali), and Multi-Page PDFs.*
             """
@@ -376,7 +376,7 @@ def build_app() -> gr.Blocks:
                         label="OCR Engine Adapter",
                         choices=[
                             ("Intelligent Router (Auto-Select)", "auto"),
-                            ("AQIVON Hybrid Ensemble (Peak Accuracy)", "hybrid"),
+                            ("Aqua Hybrid Ensemble (Peak Accuracy)", "hybrid"),
                             ("Baidu Unlimited-OCR (R-SWA Layout)", "unlimited_ocr"),
                             ("PaddleOCR Multilingual (DBNet+SVTR)", "paddleocr"),
                             ("IndicOCR (Specialized Indian Scripts)", "indicocr"),
@@ -399,7 +399,7 @@ def build_app() -> gr.Blocks:
                     show_conf_check = gr.Checkbox(label="Show Confidence Scores (%)", value=False)
                     conf_slider = gr.Slider(label="Min Confidence Threshold", minimum=0.0, maximum=1.0, value=0.0, step=0.05)
 
-                run_btn = gr.Button("⚡ Run AQIVON OmniOCR", variant="primary", size="lg")
+                run_btn = gr.Button("⚡ Run Aqua OCR Smart Engine", variant="primary", size="lg")
 
                 # Sample Documents Selector
                 sample_files = [
@@ -515,7 +515,7 @@ def build_app() -> gr.Blocks:
         gr.Markdown(
             """
             ---
-            **AQIVON OmniOCR** • AQIVON Technologies • GPU Acceleration for RTX 3060 12GB • [NOTICES.md](NOTICES.md)
+            **Aqua OCR Smart Engine** • AQIVON Technologies • GPU Acceleration for RTX 3060 12GB • [NOTICES.md](NOTICES.md)
             """
         )
 
@@ -524,5 +524,5 @@ def build_app() -> gr.Blocks:
 
 if __name__ == "__main__":
     demo = build_app()
-    print("Launching AQIVON OmniOCR Testing Interface on http://127.0.0.1:7860 ...")
+    print("Launching Aqua OCR Smart Engine Testing Interface on http://127.0.0.1:7860 ...")
     demo.launch(server_name="127.0.0.1", server_port=7860, share=False)

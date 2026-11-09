@@ -1,6 +1,6 @@
 # Third-Party Notices & Attribution
 
-AQIVON OmniOCR incorporates algorithms, architectures, and concepts inspired by or adapted from open-source projects. In accordance with their respective open-source licenses, required notices and attributions are set forth below.
+Aqua OCR Smart Engine incorporates algorithms, architectures, and concepts inspired by or adapted from open-source projects. In accordance with their respective open-source licenses, required notices and attributions are set forth below.
 
 ---
 

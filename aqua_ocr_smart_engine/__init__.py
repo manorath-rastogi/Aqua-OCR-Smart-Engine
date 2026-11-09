@@ -1,10 +1,10 @@
 """
-AQIVON OmniOCR
-A unified, production-ready AI OCR engine by AQIVON Technologies.
+Aqua OCR Smart Engine
+A unified, production-ready AI OCR platform by AQIVON Technologies.
 """
 
-from aqivon_omniocr.config import OmniOCRConfig, DEFAULT_CONFIG
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.config import AquaOCRConfig, OmniOCRConfig, DEFAULT_CONFIG
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     TableCell,
@@ -14,11 +14,11 @@ from aqivon_omniocr.types import (
     BlockType,
     EngineCapability,
 )
-from aqivon_omniocr.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
-from aqivon_omniocr.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
-from aqivon_omniocr.router import IntelligentRouter
+from aqua_ocr_smart_engine.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
+from aqua_ocr_smart_engine.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
+from aqua_ocr_smart_engine.router import IntelligentRouter
 
-from aqivon_omniocr.engines import (
+from aqua_ocr_smart_engine.engines import (
     BaseOCREngine,
     PaddleOCREngine,
     TrOCREngine,
@@ -31,7 +31,7 @@ from aqivon_omniocr.engines import (
     HybridEnsembleEngine,
 )
 
-from aqivon_omniocr.postprocessor import (
+from aqua_ocr_smart_engine.postprocessor import (
     TableBuilder,
     ReadingOrderSorter,
     MarkdownBuilder,
@@ -40,6 +40,7 @@ from aqivon_omniocr.postprocessor import (
 __version__ = "1.0.0"
 __author__ = "AQIVON Technologies"
 __all__ = [
+    "AquaOCRConfig",
     "OmniOCRConfig",
     "DEFAULT_CONFIG",
     "BoundingBox",

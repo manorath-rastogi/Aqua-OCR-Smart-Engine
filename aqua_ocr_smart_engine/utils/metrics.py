@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Benchmark & Evaluation Metrics.
+Aqua OCR Smart Engine Benchmark & Evaluation Metrics.
 Provides Character Error Rate (CER), Word Error Rate (WER), Levenshtein edit distance,
 and throughput tracking for OCR performance verification.
 """

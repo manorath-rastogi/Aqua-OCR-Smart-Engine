@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Surya Layout & OCR Adapter.
+Aqua OCR Smart Engine Surya Layout & OCR Adapter.
 Specialized in complex document layout analysis, column segmentation,
 reading order estimation, and multilingual line detection across 90+ languages.
 """
@@ -9,8 +9,8 @@ from typing import Any, List, Optional
 import numpy as np
 from PIL import Image
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -18,7 +18,7 @@ from aqivon_omniocr.types import (
     EngineCapability,
 )
 
-logger = logging.getLogger("aqivon_omniocr.engines.surya_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.surya_engine")
 
 
 class SuryaOCREngine(BaseOCREngine):
@@ -123,7 +123,7 @@ class SuryaOCREngine(BaseOCREngine):
                 logger.error("Surya execution failed (%s); delegating to fallback.", e)
 
         # Fallback to high-performance multilingual layout engine
-        from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
+        from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
         fallback = PaddleOCREngine(
             vram_manager=self.vram_manager,
             preprocessor=self.preprocessor

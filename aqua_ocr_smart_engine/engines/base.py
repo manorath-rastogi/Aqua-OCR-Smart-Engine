@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Base Engine Specification.
+Aqua OCR Smart Engine Base Engine Specification.
 Defines the abstract interface that every modular OCR adapter must implement.
 """
 
@@ -9,23 +9,23 @@ import time
 from typing import Any, Dict, List, Optional, Union
 import numpy as np
 
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     PageResult,
     OCRResult,
     EngineCapability,
 )
-from aqivon_omniocr.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
-from aqivon_omniocr.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
-from aqivon_omniocr.postprocessor.markdown_builder import MarkdownBuilder
-from aqivon_omniocr.postprocessor.reading_order import ReadingOrderSorter
+from aqua_ocr_smart_engine.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
+from aqua_ocr_smart_engine.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
+from aqua_ocr_smart_engine.postprocessor.markdown_builder import MarkdownBuilder
+from aqua_ocr_smart_engine.postprocessor.reading_order import ReadingOrderSorter
 
-logger = logging.getLogger("aqivon_omniocr.engines.base")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.base")
 
 
 class BaseOCREngine(ABC):
-    """Abstract base class for all AQIVON OmniOCR engine adapters."""
+    """Abstract base class for all Aqua OCR Smart Engine adapters."""
 
     def __init__(
         self,

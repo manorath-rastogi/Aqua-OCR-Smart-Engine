@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Standardized Types & Data Models.
+Aqua OCR Smart Engine Standardized Types & Data Models.
 Provides a unified representation of OCR detections, pages, tables, and documents.
 """
 
@@ -176,7 +176,7 @@ class PageResult:
 
 @dataclass
 class OCRResult:
-    """Unified result for an entire document processed by AQIVON OmniOCR."""
+    """Unified result for an entire document processed by Aqua OCR Smart Engine."""
     document_name: str
     num_pages: int
     pages: List[PageResult] = field(default_factory=list)

@@ -1,5 +1,5 @@
 """
-End-to-end benchmark and accuracy verification for AQIVON OmniOCR.
+End-to-end benchmark and accuracy verification for Aqua OCR Smart Engine.
 Tests PaddleOCR, IndicOCR, TrOCR, and Hybrid engines on synthetic document samples.
 """
 
@@ -12,13 +12,13 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from aqivon_omniocr.router import IntelligentRouter
-from aqivon_omniocr.utils.metrics import OCRMetrics
+from aqua_ocr_smart_engine.router import IntelligentRouter
+from aqua_ocr_smart_engine.utils.metrics import OCRMetrics
 
 
 def run_benchmark():
     print("=" * 60)
-    print("AQIVON OmniOCR System Benchmark & Verification")
+    print("Aqua OCR Smart Engine System Benchmark & Verification")
     print("=" * 60)
 
     router = IntelligentRouter()

@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Baidu Unlimited-OCR Adapter.
+Aqua OCR Smart Engine Baidu Unlimited-OCR Adapter.
 Integrates the long-horizon document parsing and Reference Sliding Window Attention (R-SWA)
 capabilities from Baidu Unlimited-OCR (including Unlimited-OCR-2).
 Features:
@@ -14,8 +14,8 @@ from typing import Any, Dict, List, Optional
 import numpy as np
 from PIL import Image
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -23,10 +23,10 @@ from aqivon_omniocr.types import (
     TableResult,
     EngineCapability,
 )
-from aqivon_omniocr.postprocessor.markdown_builder import MarkdownBuilder
-from aqivon_omniocr.postprocessor.table_builder import TableBuilder
+from aqua_ocr_smart_engine.postprocessor.markdown_builder import MarkdownBuilder
+from aqua_ocr_smart_engine.postprocessor.table_builder import TableBuilder
 
-logger = logging.getLogger("aqivon_omniocr.engines.unlimited_ocr")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.unlimited_ocr")
 
 
 class UnlimitedOCREngine(BaseOCREngine):
@@ -44,7 +44,7 @@ class UnlimitedOCREngine(BaseOCREngine):
     ):
         super().__init__(
             engine_id="unlimited_ocr",
-            display_name="AQIVON Unlimited-OCR Engine (R-SWA Architecture)",
+            display_name="Aqua Unlimited-OCR Engine (R-SWA Architecture)",
             **kwargs
         )
         self.model_name = model_name
@@ -154,7 +154,7 @@ class UnlimitedOCREngine(BaseOCREngine):
 
         # 3. Native Layout & R-SWA Structuring Engine
         # Leverages fast edge & contour detection combined with Unlimited-OCR postprocessing
-        from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
+        from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
         fallback_paddle = PaddleOCREngine(
             vram_manager=self.vram_manager,
             preprocessor=self.preprocessor

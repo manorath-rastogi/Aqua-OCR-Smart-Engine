@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR TrOCR Adapter.
+Aqua OCR Smart Engine TrOCR Adapter.
 Transformer-based OCR (VisionEncoderDecoder) specialized for Handwritten Text Recognition (HTR)
 and degraded document line recognition using Microsoft TrOCR architectures.
 Optimized for NVIDIA RTX 3060 12GB via FP16 tensor acceleration.
@@ -11,8 +11,8 @@ import cv2
 import numpy as np
 from PIL import Image
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -20,7 +20,7 @@ from aqivon_omniocr.types import (
     EngineCapability,
 )
 
-logger = logging.getLogger("aqivon_omniocr.engines.trocr_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.trocr_engine")
 
 
 class TrOCREngine(BaseOCREngine):

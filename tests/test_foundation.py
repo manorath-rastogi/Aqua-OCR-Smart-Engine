@@ -1,5 +1,5 @@
 """
-Unit tests for AQIVON OmniOCR foundation components:
+Unit tests for Aqua OCR Smart Engine foundation components:
 types, config, vram_manager, and preprocessor.
 """
 
@@ -15,8 +15,8 @@ if str(PROJECT_ROOT) not in sys.path:
 import numpy as np
 from PIL import Image
 
-from aqivon_omniocr.config import OmniOCRConfig, DEFAULT_CONFIG
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.config import AquaOCRConfig, DEFAULT_CONFIG
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     TableCell,
@@ -25,8 +25,8 @@ from aqivon_omniocr.types import (
     OCRResult,
     BlockType
 )
-from aqivon_omniocr.vram_manager import VRAMManager
-from aqivon_omniocr.preprocessor import DocumentPreprocessor
+from aqua_ocr_smart_engine.vram_manager import VRAMManager
+from aqua_ocr_smart_engine.preprocessor import DocumentPreprocessor
 
 
 def test_bounding_box():

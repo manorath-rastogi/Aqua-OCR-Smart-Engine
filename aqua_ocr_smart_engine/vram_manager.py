@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR VRAM & Hardware Manager.
+Aqua OCR Smart Engine VRAM & Hardware Manager.
 Tailored for NVIDIA GeForce RTX 3060 12GB GDDR6 and multi-core CPU environments.
 Ensures zero CUDA OOMs (Out-Of-Memory) via dynamic model caching and FP16/BF16 memory management.
 """
@@ -9,7 +9,7 @@ import gc
 import logging
 from typing import Any, Callable, Dict, Optional, Tuple
 
-logger = logging.getLogger("aqivon_omniocr.vram_manager")
+logger = logging.getLogger("aqua_ocr_smart_engine.vram_manager")
 
 
 class VRAMManager:

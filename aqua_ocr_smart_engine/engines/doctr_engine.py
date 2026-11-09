@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR docTR Adapter.
+Aqua OCR Smart Engine docTR Adapter.
 Seamless integration of Mindee docTR end-to-end deep learning OCR (PyTorch backend).
 Optimized for invoices, receipts, corporate documents, and form parsing.
 """
@@ -8,8 +8,8 @@ import logging
 from typing import Any, List, Optional
 import numpy as np
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -17,7 +17,7 @@ from aqivon_omniocr.types import (
     EngineCapability,
 )
 
-logger = logging.getLogger("aqivon_omniocr.engines.doctr_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.doctr_engine")
 
 
 class DocTREngine(BaseOCREngine):
@@ -115,7 +115,7 @@ class DocTREngine(BaseOCREngine):
                 logger.error("docTR execution error: %s", e)
 
         # Fallback to high-performance multilingual engine
-        from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
+        from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
         fallback = PaddleOCREngine(
             vram_manager=self.vram_manager,
             preprocessor=self.preprocessor

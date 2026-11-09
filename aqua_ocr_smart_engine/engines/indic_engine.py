@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR IndicOCR Adapter.
+Aqua OCR Smart Engine IndicOCR Adapter.
 Specialized Indian language OCR engine tailored for Indic scripts:
 - Hindi (हिन्दी) & Marathi (मराठी) - Devanagari
 - Urdu (اردو) - Nastaliq / Perso-Arabic RTL
@@ -20,8 +20,8 @@ import numpy as np
 os.environ["PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT"] = "0"
 os.environ["FLAGS_use_mkldnn"] = "0"
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -29,7 +29,7 @@ from aqivon_omniocr.types import (
     EngineCapability,
 )
 
-logger = logging.getLogger("aqivon_omniocr.engines.indic_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.indic_engine")
 
 
 class IndicOCREngine(BaseOCREngine):

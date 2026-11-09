@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "aqivon-omniocr"
+name = "aqua-ocr-smart-engine"
 version = "1.0.0"
-description = "AQIVON OmniOCR: Unified, production-ready AI OCR engine by AQIVON Technologies"
+description = "Aqua OCR Smart Engine: Unified, production-ready AI OCR platform by AQIVON Technologies"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {text = "Proprietary / AQIVON Technologies"}
@@ -24,9 +24,9 @@ dependencies = [
 ]
 
 [project.scripts]
+aqua-ocr = "cli:main"
 omniocr = "cli:main"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["aqivon_omniocr*"]
-
+include = ["aqua_ocr_smart_engine*"]

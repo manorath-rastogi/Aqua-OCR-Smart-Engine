@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Table Reconstruction & Formatting Module.
+Aqua OCR Smart Engine Table Reconstruction & Formatting Module.
 Reconstructs, sanitizes, and converts table structures from OCR tokens, HTML,
 and grid cells into clean Markdown and semantic HTML representations.
 """
@@ -8,7 +8,7 @@ from html.parser import HTMLParser
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
-from aqivon_omniocr.types import BoundingBox, TableCell, TableResult
+from aqua_ocr_smart_engine.types import BoundingBox, TableCell, TableResult
 
 
 class TableBuilder:

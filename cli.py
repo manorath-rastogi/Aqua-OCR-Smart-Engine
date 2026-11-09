@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Command Line Interface (CLI).
+Aqua OCR Smart Engine Command Line Interface (CLI).
 Production-grade CLI for single documents, multi-page PDFs, batch directory processing,
 engine listing, and automated benchmarking.
 """
@@ -16,9 +16,9 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from aqivon_omniocr import (
+from aqua_ocr_smart_engine import (
     IntelligentRouter,
-    OmniOCRConfig,
+    AquaOCRConfig,
     DEFAULT_CONFIG,
     GLOBAL_VRAM_MANAGER
 )
@@ -27,7 +27,7 @@ logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s] [%(levelname)s] %(name)s: %(message)s"
 )
-logger = logging.getLogger("aqivon_omniocr.cli")
+logger = logging.getLogger("aqua_ocr_smart_engine.cli")
 
 
 def cmd_process(args):
@@ -49,10 +49,10 @@ def cmd_process(args):
         logger.warning("No supported document files found to process.")
         return
 
-    out_dir = Path(args.out_dir) if args.out_dir else input_path.parent / "omniocr_output"
+    out_dir = Path(args.out_dir) if args.out_dir else input_path.parent / "aqua_ocr_output"
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\nAQIVON OmniOCR: Processing {len(files_to_process)} document(s)...")
+    print(f"\nAqua OCR Smart Engine: Processing {len(files_to_process)} document(s)...")
     print(f"Target Language: {args.lang} | Requested Engine: {args.engine or 'Auto'} | Handwritten: {args.handwritten}")
     print("-" * 65)
 
@@ -106,7 +106,7 @@ def cmd_engines(args):
     device = GLOBAL_VRAM_MANAGER.get_device()
 
     print("\n" + "=" * 65)
-    print("AQIVON OmniOCR - Engine Adapters & Hardware Status")
+    print("Aqua OCR Smart Engine - Engine Adapters & Hardware Status")
     print("=" * 65)
     print(f"Active Device: {device}")
     print(f"VRAM Allocated: {vram_stats['allocated_mb']} MB / Total: {vram_stats['total_mb']} MB (Free: {vram_stats['free_mb']} MB)")
@@ -131,7 +131,7 @@ def cmd_benchmark(args):
 
 def main():
     parser = argparse.ArgumentParser(
-        description="AQIVON OmniOCR: Unified AI OCR Platform by AQIVON Technologies"
+        description="Aqua OCR Smart Engine: Unified AI OCR Platform by AQIVON Technologies"
     )
     subparsers = parser.add_subparsers(dest="command", help="Available sub-commands")
 

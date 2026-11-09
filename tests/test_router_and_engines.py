@@ -1,5 +1,5 @@
 """
-Unit & Integration tests for AQIVON OmniOCR Intelligent Router, Engines, and Metrics.
+Unit & Integration tests for Aqua OCR Smart Engine Intelligent Router, Engines, and Metrics.
 """
 
 import os
@@ -11,20 +11,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from aqivon_omniocr.router import IntelligentRouter
-from aqivon_omniocr.types import BoundingBox, TextBlock, BlockType, PageResult
-from aqivon_omniocr.utils.metrics import OCRMetrics
-from aqivon_omniocr.utils.visualizer import LayoutVisualizer
+from aqua_ocr_smart_engine.router import IntelligentRouter
+from aqua_ocr_smart_engine.types import BoundingBox, TextBlock, BlockType, PageResult
+from aqua_ocr_smart_engine.utils.metrics import OCRMetrics
+from aqua_ocr_smart_engine.utils.visualizer import LayoutVisualizer
 
 
 def test_metrics_calculation():
-    ref = "AQIVON OmniOCR production ready platform"
-    hyp = "AQIVON OmniOCR production ready platform"
+    ref = "Aqua OCR Smart Engine production ready platform"
+    hyp = "Aqua OCR Smart Engine production ready platform"
     assert OCRMetrics.compute_cer(ref, hyp) == 0.0
     assert OCRMetrics.compute_wer(ref, hyp) == 0.0
 
     # 1 char error
-    hyp_err = "AQIVON OmniOCR production ready platfomm"
+    hyp_err = "Aqua OCR Smart Engine production ready platfomm"
     cer = OCRMetrics.compute_cer(ref, hyp_err)
     assert 0.0 < cer < 0.1
 

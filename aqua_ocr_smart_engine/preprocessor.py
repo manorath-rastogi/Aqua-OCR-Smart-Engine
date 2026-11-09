@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Document Preprocessor.
+Aqua OCR Smart Engine Document Preprocessor.
 Handles PDF rendering, auto-deskewing, contrast adjustment, orientation correction,
 and adaptive binarization for maximum OCR recognition accuracy.
 """
@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 from PIL import Image
 
-logger = logging.getLogger("aqivon_omniocr.preprocessor")
+logger = logging.getLogger("aqua_ocr_smart_engine.preprocessor")
 
 
 class DocumentPreprocessor:

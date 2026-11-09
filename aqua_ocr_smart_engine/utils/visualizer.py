@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Visualizer Utility.
+Aqua OCR Smart Engine Visualizer Utility.
 Draws color-coded bounding boxes, reading order badges, and layout blocks
 onto document images for visual inspection and verification.
 """
@@ -8,7 +8,7 @@ from typing import List, Optional, Tuple
 import cv2
 import numpy as np
 
-from aqivon_omniocr.types import BoundingBox, TextBlock, BlockType, PageResult
+from aqua_ocr_smart_engine.types import BoundingBox, TextBlock, BlockType, PageResult
 
 
 class LayoutVisualizer:

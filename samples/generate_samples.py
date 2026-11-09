@@ -1,5 +1,5 @@
 """
-Generates synthetic sample documents for benchmarking AQIVON OmniOCR:
+Generates synthetic sample documents for benchmarking Aqua OCR Smart Engine:
 1. English Business Invoice / Document with Table
 2. Hindi (हिन्दी) & Marathi (मराठी) Devanagari text
 3. Simulated Handwritten Note

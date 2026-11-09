@@ -1,6 +1,6 @@
-# AQIVON OmniOCR — Aqua OCR Smart Engine
+# Aqua OCR Smart Engine
 
-**AQIVON OmniOCR** is a unified, production-ready AI OCR engine developed by **AQIVON Technologies**. It integrates the best capabilities of modern OCR architectures into one modular, hardware-optimized platform engineered specifically for **accuracy, handwritten text recognition, Indian language scripts (Hindi, Marathi, Urdu, Bengali), multi-page PDFs, tables, and document layout parsing**.
+**Aqua OCR Smart Engine** is a unified, production-ready AI OCR platform developed by **AQIVON Technologies**. It integrates the best capabilities of modern OCR architectures into one modular, hardware-optimized platform engineered specifically for **accuracy, handwritten text recognition, Indian language scripts (Hindi, Marathi, Urdu, Bengali), multi-page PDFs, tables, and document layout parsing**.
 
 Optimized for practical GPU environments including the **NVIDIA GeForce RTX 3060 12GB GDDR6** and high-efficiency multi-core CPUs.
 
@@ -36,7 +36,7 @@ Optimized for practical GPU environments including the **NVIDIA GeForce RTX 3060
                                           |
                                           v
                       +---------------------------------------+
-                      |   AQIVON Preprocessor: De-skew,       |
+                      |   Aqua Preprocessor: De-skew,         |
                       |   Contrast CLAHE, Binarize, PDF Render|
                       +---------------------------------------+
                                           |
@@ -58,7 +58,7 @@ Optimized for practical GPU environments including the **NVIDIA GeForce RTX 3060
                                           |
                                           v
                       +---------------------------------------+
-                      |   AQIVON Structural Post-Processor    |
+                      |   Aqua Structural Post-Processor      |
                       |   - R-SWA Heading & Token Normalizer  |
                       |   - HTML/Markdown Table Reconstructor |
                       |   - Geometric Reading Order Sorter    |
@@ -66,7 +66,7 @@ Optimized for practical GPU environments including the **NVIDIA GeForce RTX 3060
                                           |
                                           v
                       +---------------------------------------+
-                      |   Unified AQIVON OCRResult            |
+                      |   Unified Aqua OCRResult              |
                       |   - Full Text & Structured Markdown   |
                       |   - Color-coded BBoxes & Layout Data  |
                       |   - Latency & Telemetry Metrics       |
@@ -79,7 +79,7 @@ Optimized for practical GPU environments including the **NVIDIA GeForce RTX 3060
 
 ```text
 g:\Aqua OCR Smart Engine\
-├── aqivon_omniocr/
+├── aqua_ocr_smart_engine/
 │   ├── __init__.py               # Top-level module exports
 │   ├── config.py                 # System configuration & RTX 3060 presets
 │   ├── types.py                  # Standardized data models (BoundingBox, TextBlock, OCRResult)
@@ -113,7 +113,8 @@ g:\Aqua OCR Smart Engine\
 │   ├── generate_samples.py       # Test sample document generator
 │   ├── sample_english_invoice.png# Business invoice sample
 │   ├── sample_indic_hindi.png    # Hindi/Marathi Devanagari sample
-│   └── sample_handwriting.png    # Simulated handwritten prescription sample
+│   ├── sample_handwriting.png    # Simulated handwritten prescription sample
+│   └── sample_multipage_document.pdf # Multi-page PDF sample
 ├── app.py                        # Lightweight Gradio testing interface
 ├── cli.py                        # Production command-line tool
 ├── requirements.txt              # Core dependencies
@@ -127,7 +128,7 @@ g:\Aqua OCR Smart Engine\
 ## Python API Usage
 
 ```python
-from aqivon_omniocr import IntelligentRouter
+from aqua_ocr_smart_engine import IntelligentRouter
 
 # 1. Initialize Intelligent Router
 router = IntelligentRouter()
@@ -209,7 +210,7 @@ Tested across synthetic and document benchmarks:
 
 ## Third-Party Notices & Attribution
 
-AQIVON OmniOCR respects open-source licensing. Please review [NOTICES.md](NOTICES.md) for full license texts and copyright attributions for:
+Aqua OCR Smart Engine respects open-source licensing. Please review [NOTICES.md](NOTICES.md) for full license texts and copyright attributions for:
 - Baidu Unlimited-OCR (MIT License)
 - PaddleOCR (Apache License 2.0)
 - Microsoft TrOCR (Apache License 2.0)
@@ -219,5 +220,4 @@ AQIVON OmniOCR respects open-source licensing. Please review [NOTICES.md](NOTICE
 - Tesseract (Apache License 2.0)
 
 ---
-*AQIVON OmniOCR is developed and maintained by AQIVON Technologies.*
-
+*Aqua OCR Smart Engine is developed and maintained by AQIVON Technologies.*

@@ -1,5 +1,5 @@
 """
-Unit tests for AQIVON OmniOCR post-processor:
+Unit tests for Aqua OCR Smart Engine post-processor:
 table reconstruction, reading order sorting, and markdown building.
 """
 
@@ -11,8 +11,8 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from aqivon_omniocr.types import BoundingBox, TextBlock, BlockType
-from aqivon_omniocr.postprocessor import TableBuilder, ReadingOrderSorter, MarkdownBuilder
+from aqua_ocr_smart_engine.types import BoundingBox, TextBlock, BlockType
+from aqua_ocr_smart_engine.postprocessor import TableBuilder, ReadingOrderSorter, MarkdownBuilder
 
 
 def test_table_html_parsing():

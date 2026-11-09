@@ -1,4 +1,4 @@
-# AQIVON OmniOCR Requirements
+# Aqua OCR Smart Engine Requirements
 # Core dependencies
 numpy>=1.26.0,<2.0.0
 pillow>=10.0.0

@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Markdown & Layout Reconstruction Engine.
+Aqua OCR Smart Engine Markdown & Layout Reconstruction Engine.
 Adapted from Baidu Unlimited-OCR long-horizon post-processing and layout structuring.
 Converts raw model tokens, tags, coordinates, and bounding boxes into clean, well-structured Markdown.
 """
@@ -7,9 +7,9 @@ Converts raw model tokens, tags, coordinates, and bounding boxes into clean, wel
 import re
 from typing import List, Optional, Tuple
 
-from aqivon_omniocr.types import BoundingBox, TextBlock, BlockType, PageResult, TableResult
-from aqivon_omniocr.postprocessor.table_builder import TableBuilder
-from aqivon_omniocr.postprocessor.reading_order import ReadingOrderSorter
+from aqua_ocr_smart_engine.types import BoundingBox, TextBlock, BlockType, PageResult, TableResult
+from aqua_ocr_smart_engine.postprocessor.table_builder import TableBuilder
+from aqua_ocr_smart_engine.postprocessor.reading_order import ReadingOrderSorter
 
 
 class MarkdownBuilder:

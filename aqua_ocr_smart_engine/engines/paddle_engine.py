@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR PaddleOCR Adapter.
+Aqua OCR Smart Engine PaddleOCR Adapter.
 High-throughput, multilingual OCR engine leveraging DBNet detection and SVTR/CRNN recognition.
 Supports 80+ languages including English, Hindi, Marathi, Arabic, Chinese, and European scripts.
 Compatible with both modern PaddleOCR 3.x and 2.x API formats with Windows CPU/GPU stability.
@@ -14,8 +14,8 @@ import numpy as np
 os.environ["PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT"] = "0"
 os.environ["FLAGS_use_mkldnn"] = "0"
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
@@ -23,7 +23,7 @@ from aqivon_omniocr.types import (
     EngineCapability,
 )
 
-logger = logging.getLogger("aqivon_omniocr.engines.paddle_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.paddle_engine")
 
 
 class PaddleOCREngine(BaseOCREngine):

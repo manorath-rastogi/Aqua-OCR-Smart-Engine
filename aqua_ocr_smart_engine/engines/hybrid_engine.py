@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Hybrid Ensemble Engine.
+Aqua OCR Smart Engine Hybrid Ensemble Engine.
 Intelligently harmonizes multiple OCR architectures into one high-accuracy pipeline:
 1. Fast, robust text & layout detection (Paddle / Surya)
 2. Handwriting detection & TrOCR VisionEncoderDecoder dispatch
@@ -12,21 +12,21 @@ from typing import Any, Dict, List, Optional
 import cv2
 import numpy as np
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
     PageResult,
     EngineCapability,
 )
-from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
-from aqivon_omniocr.engines.indic_engine import IndicOCREngine
-from aqivon_omniocr.engines.trocr_engine import TrOCREngine
-from aqivon_omniocr.postprocessor.markdown_builder import MarkdownBuilder
-from aqivon_omniocr.postprocessor.reading_order import ReadingOrderSorter
+from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
+from aqua_ocr_smart_engine.engines.indic_engine import IndicOCREngine
+from aqua_ocr_smart_engine.engines.trocr_engine import TrOCREngine
+from aqua_ocr_smart_engine.postprocessor.markdown_builder import MarkdownBuilder
+from aqua_ocr_smart_engine.postprocessor.reading_order import ReadingOrderSorter
 
-logger = logging.getLogger("aqivon_omniocr.engines.hybrid_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.hybrid_engine")
 
 
 class HybridEnsembleEngine(BaseOCREngine):
@@ -39,7 +39,7 @@ class HybridEnsembleEngine(BaseOCREngine):
     def __init__(self, **kwargs):
         super().__init__(
             engine_id="hybrid",
-            display_name="AQIVON Hybrid Ensemble Engine",
+            display_name="Aqua Hybrid Ensemble Engine",
             **kwargs
         )
         self.paddle_engine = PaddleOCREngine(vram_manager=self.vram_manager, preprocessor=self.preprocessor)

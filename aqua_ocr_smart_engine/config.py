@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Configuration Module
+Aqua OCR Smart Engine Configuration Module.
 Engine configuration, hardware detection, and RTX 3060 12GB optimizations.
 """
 
@@ -10,11 +10,11 @@ from typing import Dict, List, Optional
 
 
 @dataclass
-class OmniOCRConfig:
-    """Master configuration for AQIVON OmniOCR."""
+class AquaOCRConfig:
+    """Master configuration for Aqua OCR Smart Engine."""
     
     # Engine & Branding
-    system_name: str = "AQIVON OmniOCR"
+    system_name: str = "Aqua OCR Smart Engine"
     organization: str = "AQIVON Technologies"
     version: str = "1.0.0"
     
@@ -80,8 +80,8 @@ class OmniOCRConfig:
     })
     
     # Storage and Cache
-    cache_dir: Path = field(default_factory=lambda: Path(os.getenv("AQIVON_CACHE_DIR", Path.home() / ".cache" / "aqivon_omniocr")))
-    temp_dir: Path = field(default_factory=lambda: Path(os.getenv("AQIVON_TEMP_DIR", Path.home() / ".cache" / "aqivon_omniocr" / "temp")))
+    cache_dir: Path = field(default_factory=lambda: Path(os.getenv("AQUA_CACHE_DIR", Path.home() / ".cache" / "aqua_ocr_smart_engine")))
+    temp_dir: Path = field(default_factory=lambda: Path(os.getenv("AQUA_TEMP_DIR", Path.home() / ".cache" / "aqua_ocr_smart_engine" / "temp")))
     
     # Default Engine Routing Strategy
     default_engine: str = "intelligent_router"  # 'intelligent_router', 'unlimited_ocr', 'paddleocr', 'trocr', 'indicocr', 'surya', 'doctr', 'tesseract', 'hybrid'
@@ -91,6 +91,5 @@ class OmniOCRConfig:
         self.temp_dir.mkdir(parents=True, exist_ok=True)
 
 
-# Global default configuration instance
-DEFAULT_CONFIG = OmniOCRConfig()
-
+OmniOCRConfig = AquaOCRConfig
+DEFAULT_CONFIG = AquaOCRConfig()

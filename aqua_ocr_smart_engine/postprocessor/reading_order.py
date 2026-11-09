@@ -1,11 +1,11 @@
 """
-AQIVON OmniOCR Reading Order & Spatial Layout Sorter.
+Aqua OCR Smart Engine Reading Order & Spatial Layout Sorter.
 Reconstructs natural reading order for multi-column documents, forms, and mixed layouts
 using geometric spatial projection and union-find clustering.
 """
 
 from typing import List, Tuple
-from aqivon_omniocr.types import TextBlock, BoundingBox
+from aqua_ocr_smart_engine.types import TextBlock, BoundingBox
 
 
 class ReadingOrderSorter:

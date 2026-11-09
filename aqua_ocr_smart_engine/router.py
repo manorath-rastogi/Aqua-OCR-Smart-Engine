@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR Intelligent Engine Router.
+Aqua OCR Smart Engine Intelligent Engine Router.
 Dynamically routes documents and images to the optimal OCR engine based on:
 - Input language (Indian scripts, English, International)
 - Document modality (Multi-page PDF, forms, handwritten notes, academic papers)
@@ -10,34 +10,34 @@ import logging
 from typing import Any, Dict, List, Optional, Union
 import numpy as np
 
-from aqivon_omniocr.config import OmniOCRConfig, DEFAULT_CONFIG
-from aqivon_omniocr.types import OCRResult, EngineCapability
-from aqivon_omniocr.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
-from aqivon_omniocr.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
+from aqua_ocr_smart_engine.config import AquaOCRConfig, DEFAULT_CONFIG
+from aqua_ocr_smart_engine.types import OCRResult, EngineCapability
+from aqua_ocr_smart_engine.vram_manager import VRAMManager, GLOBAL_VRAM_MANAGER
+from aqua_ocr_smart_engine.preprocessor import DocumentPreprocessor, GLOBAL_PREPROCESSOR
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
-from aqivon_omniocr.engines.trocr_engine import TrOCREngine
-from aqivon_omniocr.engines.indic_engine import IndicOCREngine
-from aqivon_omniocr.engines.unlimited_ocr import UnlimitedOCREngine
-from aqivon_omniocr.engines.surya_engine import SuryaOCREngine
-from aqivon_omniocr.engines.doctr_engine import DocTREngine
-from aqivon_omniocr.engines.mineru_engine import MinerUEngine
-from aqivon_omniocr.engines.tesseract_engine import TesseractEngine
-from aqivon_omniocr.engines.hybrid_engine import HybridEnsembleEngine
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
+from aqua_ocr_smart_engine.engines.trocr_engine import TrOCREngine
+from aqua_ocr_smart_engine.engines.indic_engine import IndicOCREngine
+from aqua_ocr_smart_engine.engines.unlimited_ocr import UnlimitedOCREngine
+from aqua_ocr_smart_engine.engines.surya_engine import SuryaOCREngine
+from aqua_ocr_smart_engine.engines.doctr_engine import DocTREngine
+from aqua_ocr_smart_engine.engines.mineru_engine import MinerUEngine
+from aqua_ocr_smart_engine.engines.tesseract_engine import TesseractEngine
+from aqua_ocr_smart_engine.engines.hybrid_engine import HybridEnsembleEngine
 
-logger = logging.getLogger("aqivon_omniocr.router")
+logger = logging.getLogger("aqua_ocr_smart_engine.router")
 
 
 class IntelligentRouter:
     """
-    Core orchestration router for AQIVON OmniOCR.
+    Core orchestration router for Aqua OCR Smart Engine.
     Selects and invokes the best engine adapter for any given document.
     """
 
     def __init__(
         self,
-        config: Optional[OmniOCRConfig] = None,
+        config: Optional[AquaOCRConfig] = None,
         vram_manager: Optional[VRAMManager] = None,
         preprocessor: Optional[DocumentPreprocessor] = None
     ):

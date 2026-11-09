@@ -1,5 +1,5 @@
 """
-AQIVON OmniOCR MinerU Adapter.
+Aqua OCR Smart Engine MinerU Adapter.
 Specialized for complex PDF parsing, scientific formula/LaTeX extraction,
 multi-column research papers, and academic document layout analysis.
 """
@@ -8,17 +8,17 @@ import logging
 from typing import Any, List, Optional
 import numpy as np
 
-from aqivon_omniocr.engines.base import BaseOCREngine
-from aqivon_omniocr.types import (
+from aqua_ocr_smart_engine.engines.base import BaseOCREngine
+from aqua_ocr_smart_engine.types import (
     BoundingBox,
     TextBlock,
     BlockType,
     PageResult,
     EngineCapability,
 )
-from aqivon_omniocr.postprocessor.markdown_builder import MarkdownBuilder
+from aqua_ocr_smart_engine.postprocessor.markdown_builder import MarkdownBuilder
 
-logger = logging.getLogger("aqivon_omniocr.engines.mineru_engine")
+logger = logging.getLogger("aqua_ocr_smart_engine.engines.mineru_engine")
 
 
 class MinerUEngine(BaseOCREngine):
@@ -78,7 +78,7 @@ class MinerUEngine(BaseOCREngine):
         h, w = image.shape[:2]
 
         # Use fallback engine with LaTeX formula postprocessing
-        from aqivon_omniocr.engines.paddle_engine import PaddleOCREngine
+        from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
         fallback = PaddleOCREngine(
             vram_manager=self.vram_manager,
             preprocessor=self.preprocessor
