@@ -1,10 +1,11 @@
 """
-Aqua OCR Smart Engine (AQIVON OmniOCR) — Clean & Minimal Testing Interface.
-Unified OCR interface supporting:
-- Document / Image Upload (PNG, JPG, PDF)
-- Language Selection (Auto, English, Hindi, Marathi, Urdu, Bengali, etc.)
-- OCR Engine Selection (Auto, Tesseract, PaddleOCR, IndicOCR)
-- Direct real-backend execution with copy-ready text extraction
+Aqua OCR Smart Engine — Production AI Document Layout & OCR Platform.
+Preserves original document visual layouts:
+- Multi-column resumes, research papers, reports, invoices
+- Reading order flow (Headers -> Left Column -> Right Column -> Footers)
+- Headings, section titles, bullet lists, and tables
+- Side-by-side visual comparison between original scan and reconstructed layout
+- Multi-engine flexibility: Auto, Surya (Layout & OCR), PaddleOCR, IndicOCR, Tesseract
 """
 
 import logging
@@ -12,24 +13,29 @@ import os
 from pathlib import Path
 import sys
 import time
-from typing import Optional, Tuple
+from typing import Any, Dict, Optional, Tuple
+
+import cv2
+import numpy as np
+from PIL import Image
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-# Paddle environment flags to ensure flawless Windows CPU/GPU runtime
+# Paddle environment flags for Windows CPU/GPU stability
 os.environ["PADDLE_PDX_ENABLE_MKLDNN_BYDEFAULT"] = "0"
 os.environ["FLAGS_use_mkldnn"] = "0"
 
 import gradio as gr
 from aqua_ocr_smart_engine import IntelligentRouter
 from aqua_ocr_smart_engine.types import OCRResult
+from aqua_ocr_smart_engine.utils.visualizer import LayoutVisualizer
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("aqua_ocr_smart_engine.app")
 
-# Initialize global intelligent router connected to real OCR engines
+# Initialize global intelligent router
 ROUTER = IntelligentRouter()
 SAMPLES_DIR = PROJECT_ROOT / "samples"
 
@@ -51,26 +57,46 @@ LANGUAGE_MAP = {
 
 ENGINE_MAP = {
     "Auto": None,
-    "Tesseract": "tesseract",
+    "Surya (Layout & OCR)": "surya",
     "PaddleOCR": "paddleocr",
     "IndicOCR": "indicocr",
+    "Tesseract": "tesseract",
 }
 
 
-def run_ocr(
+def load_file_preview(file_path: Optional[str]) -> Optional[np.ndarray]:
+    """Loads first page image of uploaded file for instant display."""
+    if not file_path or not os.path.exists(file_path):
+        return None
+    try:
+        pages = ROUTER.preprocessor.load_document(file_path)
+        return pages[0] if pages else None
+    except Exception as e:
+        logger.warning("Could not load preview for %s: %s", file_path, e)
+        return None
+
+
+def run_ocr_pipeline(
     file_path: Optional[str],
     language_display: str,
-    engine_display: str
-) -> Tuple[str, str]:
+    engine_display: str,
+    progress=gr.Progress(track_tqdm=True)
+) -> Tuple[Optional[np.ndarray], str, Optional[np.ndarray], str, Dict[str, Any], str, str]:
     """
-    Executes actual OCR pipeline via Aqua OCR Smart Engine.
+    Executes full layout detection and OCR pipeline.
     Returns:
-        Tuple of (extracted_text, status_message)
+        (original_preview, html_preview, annotated_image, markdown, json_data, plain_text, status_msg)
     """
     if not file_path or not os.path.exists(file_path):
+        empty_html = "<div style='padding:20px; color:#888;'>Please upload a document to begin.</div>"
         return (
+            None,
+            empty_html,
+            None,
             "",
-            "⚠️ Error: Please upload a valid document or image before clicking 'Run OCR'."
+            {},
+            "",
+            "⚠️ Error: Please upload a valid document or image before running OCR."
         )
 
     lang_code = LANGUAGE_MAP.get(language_display, "auto")
@@ -79,11 +105,11 @@ def run_ocr(
 
     start_time = time.time()
     try:
-        logger.info(
-            "Processing '%s' [Engine: %s, Lang: %s]",
-            file_name, engine_display, language_display
-        )
+        progress(0.1, desc="Loading document & preprocessing...")
+        raw_pages = ROUTER.preprocessor.load_document(file_path)
+        original_img = raw_pages[0] if raw_pages else None
 
+        progress(0.3, desc=f"Analyzing layout with {engine_display}...")
         ocr_result: OCRResult = ROUTER.route_and_process(
             document_source=file_path,
             requested_engine=engine_id,
@@ -91,119 +117,217 @@ def run_ocr(
             document_name=file_name
         )
 
+        progress(0.8, desc="Reconstructing document layout & columns...")
         elapsed_sec = time.time() - start_time
 
-        # Extract text: if single page, keep clean format; if multi-page, keep page dividers
+        # 1. Annotated image visualization with reading order badges
+        annotated_img = None
+        first_page = ocr_result.pages[0] if ocr_result.pages else None
+        if original_img is not None and first_page is not None:
+            annotated_img = LayoutVisualizer.draw_page_result(
+                original_img,
+                first_page,
+                show_reading_order=True,
+                show_confidence=False
+            )
+
+        # 2. Formatted Layout HTML
+        html_content = ocr_result.html_preview
+        if not html_content and first_page:
+            from aqua_ocr_smart_engine.postprocessor.html_reconstructor import HTMLDocumentReconstructor
+            html_content = HTMLDocumentReconstructor.render_page(first_page)
+
+        # 3. Clean Text in Natural Reading Order
         if len(ocr_result.pages) == 1:
-            extracted_text = ocr_result.pages[0].text.strip()
+            clean_text = ocr_result.pages[0].text.strip()
         else:
-            extracted_text = ocr_result.full_text.strip()
+            clean_text = ocr_result.full_text.strip()
 
-        if not extracted_text:
-            extracted_text = "(No text detected in this document)"
+        # 4. Structured JSON representation
+        json_data = ocr_result.to_dict()
 
-        # Prepare clear diagnostic status message
+        # 5. Status Diagnostics
         engine_used_name = ocr_result.metadata.get("engine_name") or ocr_result.engine_used
         total_blocks = sum(len(p.blocks) for p in ocr_result.pages)
         device = ocr_result.metadata.get("device", "CPU")
 
         status_msg = (
-            f"✅ OCR Completed in {elapsed_sec:.2f}s | "
-            f"Engine Used: {engine_used_name} | "
+            f"✅ Layout & OCR Completed in {elapsed_sec:.2f}s | "
+            f"Engine: {engine_used_name} | "
             f"Pages: {ocr_result.num_pages} | "
-            f"Detected Blocks: {total_blocks} | "
+            f"Blocks: {total_blocks} | "
             f"Device: {device}"
         )
-
-        # Notify if Tesseract fell back to PaddleOCR
         if engine_display == "Tesseract" and ocr_result.engine_used != "tesseract":
-            status_msg += " (Note: Tesseract binary not found on system PATH; automatically processed via PaddleOCR)"
+            status_msg += " (Note: Tesseract not found on system PATH; processed via PaddleOCR)"
 
-        return extracted_text, status_msg
+        progress(1.0, desc="Completed!")
+        return (
+            original_img,
+            html_content,
+            annotated_img,
+            ocr_result.markdown,
+            json_data,
+            clean_text,
+            status_msg
+        )
 
     except Exception as exc:
-        logger.exception("OCR execution error on '%s': %s", file_name, exc)
+        logger.exception("OCR Pipeline error on '%s': %s", file_name, exc)
+        err_html = f"<div style='padding:20px; color:#d32f2f;'>Error processing document: {html_escape(str(exc))}</div>"
         return (
+            None,
+            err_html,
+            None,
             "",
-            f"❌ OCR Error: {type(exc).__name__} - {str(exc)}"
+            {"error": str(exc)},
+            "",
+            f"❌ Execution Error: {type(exc).__name__} - {str(exc)}"
         )
+
+
+def html_escape(text: str) -> str:
+    import html
+    return html.escape(text)
 
 
 def build_interface() -> gr.Blocks:
-    """Creates a minimal, clean, and functional Gradio UI."""
+    """Creates a side-by-side layout-preserving Gradio UI for Aqua OCR Smart Engine."""
     with gr.Blocks(title="Aqua OCR Smart Engine") as demo:
         gr.Markdown(
             """
             # Aqua OCR Smart Engine
-            **Unified Modular OCR Engine** &bull; AQIVON Technologies
+            **Unified Document Layout Analysis & AI OCR Platform** &bull; AQIVON Technologies
+            *Preserves original multi-column layouts, reading order, headings, and formatting side-by-side with original scans.*
             """
         )
 
         with gr.Row():
+            # Left Column: Upload, Controls, & Original Document
             with gr.Column(scale=1):
                 input_file = gr.File(
-                    label="Upload Document / Image (PNG, JPG, PDF)",
+                    label="Upload Document / PDF / Image",
                     file_types=["image", ".pdf"],
                     type="filepath"
                 )
 
-                language_selector = gr.Dropdown(
-                    label="Language Selection",
-                    choices=list(LANGUAGE_MAP.keys()),
-                    value="Auto",
-                    interactive=True
-                )
-
-                engine_selector = gr.Dropdown(
-                    label="OCR Engine Selection",
-                    choices=list(ENGINE_MAP.keys()),
-                    value="Auto",
-                    interactive=True
-                )
-
-                run_btn = gr.Button("Run OCR", variant="primary", size="lg")
-
-            with gr.Column(scale=2):
-                output_text = gr.Textbox(
-                    label="Extracted Text (with copy option)",
-                    placeholder="Extracted text will appear here...",
-                    lines=16,
-                    buttons=["copy"],
+                original_preview = gr.Image(
+                    label="Original Document Scan",
                     interactive=False
                 )
 
+                with gr.Row():
+                    language_selector = gr.Dropdown(
+                        label="Language",
+                        choices=list(LANGUAGE_MAP.keys()),
+                        value="Auto",
+                        interactive=True,
+                        scale=1
+                    )
+                    engine_selector = gr.Dropdown(
+                        label="OCR & Layout Engine",
+                        choices=list(ENGINE_MAP.keys()),
+                        value="Auto",
+                        interactive=True,
+                        scale=1
+                    )
+
+                run_btn = gr.Button("Run OCR & Layout Analysis", variant="primary", size="lg")
+
                 status_box = gr.Textbox(
                     label="Status & Execution Diagnostics",
-                    value="Ready. Please upload a document and click 'Run OCR'.",
+                    value="Ready. Upload a document or select a sample to begin.",
                     lines=2,
                     interactive=False
                 )
 
-        # Trigger OCR on click
-        run_btn.click(
-            fn=run_ocr,
-            inputs=[input_file, language_selector, engine_selector],
-            outputs=[output_text, status_box]
+            # Right Column: Reconstructed Formatted Layout & Structured Views
+            with gr.Column(scale=2):
+                with gr.Tabs():
+                    with gr.TabItem("📄 Reconstructed Formatted Layout"):
+                        output_html = gr.HTML(
+                            value="<div style='padding:30px; text-align:center; color:#888;'>Upload a document and click 'Run OCR & Layout Analysis' to see the reconstructed layout.</div>",
+                            label="Layout Faithful Document"
+                        )
+
+                    with gr.TabItem("🖼️ Visual Layout & Reading Order"):
+                        output_annotated = gr.Image(
+                            label="Document with Bounding Boxes & Reading Order Badges (#1, #2...)",
+                            interactive=False
+                        )
+
+                    with gr.TabItem("📝 Structured Markdown"):
+                        output_md = gr.Textbox(
+                            label="Structured Markdown (Columns & Sections)",
+                            lines=18,
+                            buttons=["copy"],
+                            interactive=False
+                        )
+
+                    with gr.TabItem("📊 Structured JSON"):
+                        output_json = gr.JSON(
+                            label="Structured JSON (Positions, Hierarchy, Confidence)"
+                        )
+
+                    with gr.TabItem("📜 Plain Text"):
+                        output_text = gr.Textbox(
+                            label="Natural Reading Order Text",
+                            lines=18,
+                            buttons=["copy"],
+                            interactive=False
+                        )
+
+        # Update original image preview on file upload
+        input_file.change(
+            fn=load_file_preview,
+            inputs=[input_file],
+            outputs=[original_preview]
         )
 
-        # Preloaded samples for one-click verification
-        example_samples = []
+        # Run pipeline
+        run_btn.click(
+            fn=run_ocr_pipeline,
+            inputs=[input_file, language_selector, engine_selector],
+            outputs=[
+                original_preview,
+                output_html,
+                output_annotated,
+                output_md,
+                output_json,
+                output_text,
+                status_box
+            ]
+        )
+
+        # Quick Test Samples
+        samples = []
+        sample_resume = SAMPLES_DIR / "sample_resume_luna.jpg"
         sample_invoice = SAMPLES_DIR / "sample_english_invoice.png"
         sample_hindi = SAMPLES_DIR / "sample_indic_hindi.png"
 
+        if sample_resume.exists():
+            samples.append([str(sample_resume), "English", "Auto"])
         if sample_invoice.exists():
-            example_samples.append([str(sample_invoice), "English", "PaddleOCR"])
+            samples.append([str(sample_invoice), "English", "PaddleOCR"])
         if sample_hindi.exists():
-            example_samples.append([str(sample_hindi), "Hindi", "IndicOCR"])
+            samples.append([str(sample_hindi), "Hindi", "IndicOCR"])
 
-        if example_samples:
+        if samples:
             gr.Examples(
-                examples=example_samples,
+                examples=samples,
                 inputs=[input_file, language_selector, engine_selector],
-                outputs=[output_text, status_box],
-                fn=run_ocr,
+                outputs=[
+                    original_preview,
+                    output_html,
+                    output_annotated,
+                    output_md,
+                    output_json,
+                    output_text,
+                    status_box
+                ],
+                fn=run_ocr_pipeline,
                 cache_examples=False,
-                label="Quick Test Samples"
+                label="Quick Test Samples (Click to Load)"
             )
 
     return demo
@@ -211,7 +335,6 @@ def build_interface() -> gr.Blocks:
 
 if __name__ == "__main__":
     app = build_interface()
-    # Launch on localhost
     app.launch(
         server_name="127.0.0.1",
         server_port=7860,

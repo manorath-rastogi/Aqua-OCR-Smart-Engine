@@ -96,6 +96,10 @@ class BaseOCREngine(ABC):
                 page_res.markdown = MarkdownBuilder.blocks_to_markdown(
                     page_res.blocks, page_res.tables
                 )
+
+            # Reconstruct layout-faithful HTML preview
+            from aqua_ocr_smart_engine.postprocessor.html_reconstructor import HTMLDocumentReconstructor
+            page_res.html_preview = HTMLDocumentReconstructor.render_page(page_res)
             
             # Extract plain text
             page_res.text = "\n".join(b.text for b in page_res.blocks if b.text.strip())
@@ -104,9 +108,10 @@ class BaseOCREngine(ABC):
         total_latency_ms = (time.time() - start_time) * 1000.0
         vram_stats = self.vram_manager.get_vram_stats()
 
-        # Build full document text and markdown
+        # Build full document text, markdown, and layout HTML
         full_text_parts = [f"--- Page {p.page_number} ---\n{p.text}" for p in page_results]
         full_markdown_parts = [f"\n\n<!-- Page {p.page_number} -->\n{p.markdown}" for p in page_results]
+        full_html_parts = [p.html_preview for p in page_results]
 
         result = OCRResult(
             document_name=document_name,
@@ -114,6 +119,7 @@ class BaseOCREngine(ABC):
             pages=page_results,
             full_text="\n\n".join(full_text_parts).strip(),
             markdown="\n\n".join(full_markdown_parts).strip(),
+            html_preview="\n<hr style='margin: 40px 0; border: none; border-top: 2px dashed #94a3b8;' />\n".join(full_html_parts),
             engine_used=self.engine_id,
             detected_language=language or "auto",
             total_latency_ms=total_latency_ms,

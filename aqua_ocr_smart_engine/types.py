@@ -90,6 +90,7 @@ class TextBlock:
     block_type: BlockType = BlockType.PARAGRAPH
     is_handwritten: bool = False
     reading_order_idx: int = -1
+    column_id: int = 0
     font_size_estimate: Optional[float] = None
 
     def to_dict(self) -> Dict[str, Any]:
@@ -101,6 +102,7 @@ class TextBlock:
             "block_type": self.block_type.value,
             "is_handwritten": self.is_handwritten,
             "reading_order_idx": self.reading_order_idx,
+            "column_id": self.column_id,
             "font_size_estimate": self.font_size_estimate
         }
 
@@ -159,6 +161,7 @@ class PageResult:
     tables: List[TableResult] = field(default_factory=list)
     text: str = ""
     markdown: str = ""
+    html_preview: str = ""
     latency_ms: float = 0.0
 
     def to_dict(self) -> Dict[str, Any]:
@@ -170,6 +173,7 @@ class PageResult:
             "tables": [t.to_dict() for t in self.tables],
             "text": self.text,
             "markdown": self.markdown,
+            "html_preview": self.html_preview,
             "latency_ms": round(self.latency_ms, 2)
         }
 
@@ -182,6 +186,7 @@ class OCRResult:
     pages: List[PageResult] = field(default_factory=list)
     full_text: str = ""
     markdown: str = ""
+    html_preview: str = ""
     engine_used: str = ""
     detected_language: str = "en"
     total_latency_ms: float = 0.0
@@ -198,6 +203,7 @@ class OCRResult:
             "vram_usage_mb": round(self.vram_usage_mb, 2) if self.vram_usage_mb else None,
             "full_text": self.full_text,
             "markdown": self.markdown,
+            "html_preview": self.html_preview,
             "pages": [p.to_dict() for p in self.pages],
             "metadata": self.metadata
         }

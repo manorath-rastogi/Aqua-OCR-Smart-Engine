@@ -39,7 +39,8 @@ class MarkdownBuilder:
             elif block.block_type == BlockType.HEADING_3:
                 output_lines.append(f"\n### {text}\n")
             elif block.block_type == BlockType.LIST_ITEM:
-                output_lines.append(f"- {text}")
+                clean_item = text.lstrip("•-*▪· \t")
+                output_lines.append(f"- {clean_item}")
             elif block.block_type == BlockType.FORMULA:
                 if not text.startswith("$"):
                     text = f"$${text}$$"

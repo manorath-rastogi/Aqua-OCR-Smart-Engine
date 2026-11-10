@@ -118,6 +118,6 @@ class IntelligentRouter:
         if requested_engine == "unlimited_ocr":
             return "unlimited_ocr"
 
-        # 5. Default high-precision ensemble
-        return "hybrid"
+        # 5. Default fast & robust multilingual OCR
+        return "paddleocr"
 

@@ -1,7 +1,8 @@
 """
 Aqua OCR Smart Engine Surya Layout & OCR Adapter.
-Specialized in complex document layout analysis, column segmentation,
+Specialized in deep document layout analysis, column segmentation,
 reading order estimation, and multilingual line detection across 90+ languages.
+Integrates datalab-to/surya models with hardware-optimized CPU/GPU execution.
 """
 
 import logging
@@ -27,16 +28,25 @@ class SuryaOCREngine(BaseOCREngine):
     Excels at multi-column academic papers, text line segmentation, and reading order.
     """
 
+    LABEL_MAP = {
+        "sectionheader": BlockType.HEADING_2,
+        "title": BlockType.HEADING_1,
+        "header": BlockType.HEADER,
+        "footer": BlockType.FOOTER,
+        "text": BlockType.PARAGRAPH,
+        "listitem": BlockType.LIST_ITEM,
+        "table": BlockType.TABLE_CELL,
+        "caption": BlockType.CAPTION,
+        "formula": BlockType.FORMULA,
+    }
+
     def __init__(self, **kwargs):
         super().__init__(
             engine_id="surya",
             display_name="Surya Document Layout & Line Engine",
             **kwargs
         )
-        self.det_model: Optional[Any] = None
-        self.det_processor: Optional[Any] = None
-        self.rec_model: Optional[Any] = None
-        self.rec_processor: Optional[Any] = None
+        self.layout_predictor: Optional[Any] = None
 
     def get_capabilities(self) -> EngineCapability:
         return EngineCapability(
@@ -60,73 +70,78 @@ class SuryaOCREngine(BaseOCREngine):
             return False
 
     def initialize(self):
-        """Initializes Surya detection and recognition models."""
+        """Initializes Surya layout predictor."""
         if not self.is_available():
             logger.info("Surya package not installed in environment; using layout fallback.")
             self._is_initialized = True
             return
 
         try:
-            from surya.detection import load_model as load_det_model, load_processor as load_det_proc
-            from surya.recognition import load_model as load_rec_model, load_processor as load_rec_proc
-
-            logger.info("Loading Surya models...")
-            self.det_processor = load_det_proc()
-            self.det_model = load_det_model()
-            self.rec_processor = load_rec_proc()
-            self.rec_model = load_rec_model()
-
+            from surya.fast_layout import FastLayoutPredictor
+            logger.info("Initializing Surya FastLayoutPredictor...")
+            self.layout_predictor = FastLayoutPredictor(use_order=True)
             self._is_initialized = True
         except Exception as e:
-            logger.warning("Failed to initialize Surya models (%s).", e)
+            logger.warning("Failed to initialize Surya layout predictor (%s).", e)
             self._is_initialized = True
 
     def process_image(self, image: np.ndarray, language: Optional[str] = None) -> PageResult:
-        """Processes an image using Surya or layout-aware fallback."""
+        """Processes an image using Surya layout analysis and text recognition."""
         if not self._is_initialized:
             self.initialize()
 
         h, w = image.shape[:2]
+        pil_img = Image.fromarray(image)
 
-        if self.det_model is not None and self.rec_model is not None:
-            try:
-                from surya.ocr import run_ocr
-                pil_img = Image.fromarray(image)
-                predictions = run_ocr(
-                    [pil_img],
-                    [language or "en"],
-                    self.det_model,
-                    self.det_processor,
-                    self.rec_model,
-                    self.rec_processor
-                )
-                blocks: List[TextBlock] = []
-                if predictions and len(predictions) > 0:
-                    pred = predictions[0]
-                    for line in pred.text_lines:
-                        # line.bbox is [xmin, ymin, xmax, ymax]
-                        bbox = BoundingBox(
-                            xmin=float(line.bbox[0]),
-                            ymin=float(line.bbox[1]),
-                            xmax=float(line.bbox[2]),
-                            ymax=float(line.bbox[3])
-                        )
-                        blocks.append(TextBlock(
-                            text=line.text.strip(),
-                            bbox=bbox,
-                            confidence=float(getattr(line, "confidence", 0.95)),
-                            language=language,
-                            block_type=BlockType.PARAGRAPH
-                        ))
-                return PageResult(page_number=1, width=w, height=h, blocks=blocks)
-            except Exception as e:
-                logger.error("Surya execution failed (%s); delegating to fallback.", e)
-
-        # Fallback to high-performance multilingual layout engine
+        # 1. First get line-level OCR detections
         from aqua_ocr_smart_engine.engines.paddle_engine import PaddleOCREngine
-        fallback = PaddleOCREngine(
+        paddle_engine = PaddleOCREngine(
             vram_manager=self.vram_manager,
             preprocessor=self.preprocessor
         )
-        return fallback.process_image(image, language=language)
+        base_res = paddle_engine.process_image(image, language=language)
 
+        # 2. If Surya layout predictor is available, enhance with Surya layout labels & order
+        if self.layout_predictor is not None:
+            try:
+                layout_results = self.layout_predictor([pil_img])
+                if layout_results and len(layout_results) > 0:
+                    layout_res = layout_results[0]
+                    # Map Surya boxes to enrich base_res blocks
+                    self._map_surya_layout(base_res.blocks, layout_res.bboxes, w, h)
+            except Exception as e:
+                logger.warning("Surya layout enhancement skipped: %s", e)
+
+        return base_res
+
+    def _map_surya_layout(self, blocks: List[TextBlock], layout_boxes: List[Any], w: int, h: int):
+        """Maps Surya's detected layout boxes and reading order onto fine-grained text blocks."""
+        if not blocks or not layout_boxes:
+            return
+
+        for block in blocks:
+            bc_x, bc_y = block.bbox.center
+            # Find best enclosing Surya box
+            best_box = None
+            best_area = float("inf")
+
+            for box in layout_boxes:
+                # box.polygon: [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
+                xs = [p[0] for p in box.polygon]
+                ys = [p[1] for p in box.polygon]
+                b_xmin, b_xmax = min(xs), max(xs)
+                b_ymin, b_ymax = min(ys), max(ys)
+
+                if b_xmin <= bc_x <= b_xmax and b_ymin <= bc_y <= b_ymax:
+                    area = (b_xmax - b_xmin) * (b_ymax - b_ymin)
+                    if area < best_area:
+                        best_area = area
+                        best_box = box
+
+            if best_box is not None:
+                lbl = str(best_box.label).lower().strip()
+                if lbl in self.LABEL_MAP:
+                    block.block_type = self.LABEL_MAP[lbl]
+                if hasattr(best_box, "position") and best_box.position is not None:
+                    # Scale reading order priority
+                    block.reading_order_idx = int(best_box.position) * 10
